@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <context:component-scan base-package="com.bee.fetch">
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+
+    <!-- 表示JPA Repository所在的包 -->
+    <!-- 需要在 <beans> 标签中增加对 jpa 命名空间的引用 -->
+    <!--设置自动查找时默认的自定义实现类命名规则:则在框架扫描到 AccountDao 接口时，
+    它将尝试在相同的包目录下查找 AccountDaoImpl.java，如果找到，便将其中的实现方法作为最终生成的代理类中相应方法的实现-->
+    <jpa:repositories base-package="com.bee.fetch"
+                      transaction-manager-ref="transactionManager"
+                      repository-impl-postfix="Impl"
+                      entity-manager-factory-ref="entityManagerFactory">
+    </jpa:repositories>
+
+    <!-- 事务管理 -->
+    <!-- 配置事务管理器 指定其作用的sessionFactory把事务交给Spring去处理 -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- 开启事务管理注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="persistenceProvider" ref="persistenceProvider" />
+        <property name="packagesToScan" value="com.bee.fetch" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="ORACLE" />
+                <property name="showSql" value="true" />
+                <property name="generateDdl" value="true" />
+            </bean>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.jdbc.batch_size">100</prop>
+                <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.SingletonEhCacheRegionFactory</prop>
+                <!--<prop key="net.sf.ehcache.configurationResourceName">/config/cache/ehcache-config.xml</prop>-->
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+                <!--
+                <prop key="hibernate.cache.provider_class">com.googlecode.hibernate.memcached.MemcachedCacheProvider</prop>
+                <prop key="hibernate.memcached.servers">localhost:11211</prop>
+                <prop key="hibernate.memcached.cacheTimeSeconds">300</prop>
+                 -->
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.use_structured_entries">true</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@//127.0.0.1:1521/orcl" />
+        <property name="user" value="ME" />
+        <property name="password" value="123456" />
+
+        <property name="minPoolSize" value="1" />
+        <property name="maxPoolSize" value="20" />
+        <property name="initialPoolSize" value="1" />
+        <property name="maxIdleTime" value="25000" />
+
+        <property name="breakAfterAcquireFailure" value="false" />
+        <property name="acquireIncrement" value="5" />
+        <property name="acquireRetryAttempts" value="30" />
+        <property name="maxStatements" value="20" />
+    </bean>
+
+    <bean id="persistenceProvider" class="org.hibernate.jpa.HibernatePersistenceProvider" />
+
+    <!--声明自动为spring容器中那些配置@aspectJ切面的bean创建代理，织入切面 -->
+    <!--expose-proxy:当前代理是否为可暴露状态,值是'true',则为可访问-->
+    <aop:aspectj-autoproxy expose-proxy="true" />
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="create*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="*" propagation="REQUIRED" />
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 那些类的哪些方法参与事务 -->
+    <aop:config expose-proxy="true">
+        <aop:pointcut id="txPointcut"
+                      expression="execution(* com.bee.fetch.service.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+    </aop:config>
+</beans>
