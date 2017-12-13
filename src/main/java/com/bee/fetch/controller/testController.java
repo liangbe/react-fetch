@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 public class testController {
 
     @Autowired
-    UserService  userServiceu;
+    UserService  userService;
 
 
 
