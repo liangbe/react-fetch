@@ -42,7 +42,7 @@
 
     <!--<mvc:resources mapping="/static/**" location="/Content/Html/dist/static/" />-->
     <!--<mvc:view-controller path="/" view-name="/index.html"/>-->
-    <mvc:resources mapping="/**" location="/Content/Html/dist/" />
+    <mvc:resources mapping="/**" location="/Content/html/" />
 
 
 </beans>
