@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd ">
+
+    <!-- 安全认证过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager" />
+        <property name="loginUrl" value="/index" />
+
+        <property name="filterChainDefinitions">
+            <value>
+                /login = anon
+                /** = authc
+
+            </value>
+        </property>
+    </bean>
+
+    <!-- 定义 Shiro 主要业务对象 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="systemAuthorizingRealm" />
+    </bean>
+
+    <bean id="systemAuthorizingRealm" class="com.bee.fetch.utils.MyShiroRealm">
+        <property name="accountService" ref="customRealm" />
+    </bean>
+
+    <bean id="customRealm" class="com.bee.fetch.utils.CustomRealm"></bean>
+
+
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+
+</beans>

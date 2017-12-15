@@ -6,5 +6,5 @@
 .idea
 *.iml
 node_modules
-out
+/src/main/webapp/Content/images/*
 gen
