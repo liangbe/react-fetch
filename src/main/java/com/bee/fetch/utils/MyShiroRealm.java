@@ -1,6 +1,7 @@
 package com.bee.fetch.utils;
 
 import com.bee.fetch.entity.User;
+import com.bee.fetch.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -10,7 +11,9 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -24,32 +27,14 @@ public class MyShiroRealm extends AuthorizingRealm {
      *
      */
 
-    public CustomRealm getAccountService() {
-        return accountService;
-    }
-
-    public void setAccountService(CustomRealm accountService) {
-        this.accountService = accountService;
-    }
 
     /**用户的业务类**/
-    private CustomRealm accountService;
+    @Resource
+    private UserService userService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection pc) {
-        //根据自己系统规则的需要编写获取授权信息，这里为了快速入门只获取了用户对应角色的资源url信息
-        String username = (String) pc.fromRealm(getName()).iterator().next();
-        if (username != null) {
-            List<String> pers = accountService.getPermissionsByUserName(username);
-            if (pers != null && !pers.isEmpty()) {
-                SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-                for (String each : pers) {
-                    //将权限资源添加到用户信息中
-                    info.addStringPermission(each);
-                }
-                return info;
-            }
-        }
+
         return null;
     }
     /***
@@ -61,7 +46,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         // 通过表单接收的用户名
         String username = token.getUsername();
         if (username != null && !"".equals(username)) {
-            User user = accountService.getUserByUserName(username);
+            User user = userService.findByName(username);
             if (user != null) {
                 return new SimpleAuthenticationInfo(user.getName(), user.getPassword(), getName());
             }

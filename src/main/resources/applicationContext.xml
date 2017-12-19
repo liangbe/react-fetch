@@ -43,7 +43,7 @@
         <property name="packagesToScan" value="com.bee.fetch" />
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="database" value="ORACLE" />
+                <property name="database" value="MYSQL" />
                 <property name="showSql" value="true" />
                 <property name="generateDdl" value="true" />
             </bean>
@@ -51,8 +51,8 @@
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.jdbc.batch_size">100</prop>
-                <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
-                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.SingletonEhCacheRegionFactory</prop>
+                <!--<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>-->
+                <!--<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.SingletonEhCacheRegionFactory</prop>-->
                 <!--<prop key="net.sf.ehcache.configurationResourceName">/config/cache/ehcache-config.xml</prop>-->
                 <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
                 <!--
@@ -60,21 +60,21 @@
                 <prop key="hibernate.memcached.servers">localhost:11211</prop>
                 <prop key="hibernate.memcached.cacheTimeSeconds">300</prop>
                  -->
-                <prop key="hibernate.cache.use_second_level_cache">true</prop>
-                <prop key="hibernate.cache.use_structured_entries">true</prop>
-                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <!--<prop key="hibernate.cache.use_second_level_cache">true</prop>-->
+                <!--<prop key="hibernate.cache.use_structured_entries">true</prop>-->
+                <!--<prop key="hibernate.cache.use_query_cache">true</prop>-->
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
             </props>
         </property>
     </bean>
 
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
-        <property name="jdbcUrl" value="jdbc:oracle:thin:@//127.0.0.1:1521/orcl" />
-        <property name="user" value="ME" />
-        <property name="password" value="123456" />
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/springboot" />
+        <property name="user" value="sbDev" />
+        <property name="password" value="mysql123" />
 
         <property name="minPoolSize" value="1" />
         <property name="maxPoolSize" value="20" />

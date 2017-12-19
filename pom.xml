@@ -53,6 +53,12 @@
       <artifactId>spring-data-jpa</artifactId>
       <version>${spring-data-jpa.version}</version>
     </dependency>
+    <dependency><!-- spring对测试框架的简单封装功能 -->
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
