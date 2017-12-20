@@ -14,7 +14,9 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by liangbe on 2017/12/15.
@@ -31,11 +33,17 @@ public class MyShiroRealm extends AuthorizingRealm {
     /**用户的业务类**/
     @Resource
     private UserService userService;
-
+// 一定要完整写完两个方法的返回值不能为空
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection pc) {
 
-        return null;
+        Set<String> roleNames = new HashSet<String>();
+        Set<String> permissions = new HashSet<String>();
+        roleNames.add("administrator");//添加角色
+        permissions.add("newPage.jhtml");  //添加权限
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(roleNames);
+        info.setStringPermissions(permissions);
+        return info;
     }
     /***
      * 获取认证信息

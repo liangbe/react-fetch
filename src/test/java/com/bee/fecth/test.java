@@ -1,7 +1,7 @@
 package com.bee.fecth;
 
 //import com.bee.fetch.service.UserService;
-import com.bee.fetch.utils.MyShiroRealm;
+//import com.bee.fetch.utils.MyShiroRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.mgt.DefaultSecurityManager;
