@@ -2,6 +2,7 @@ package com.bee.fetch.utils;
 
 import com.bee.fetch.entity.User;
 import com.bee.fetch.service.UserService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -10,7 +11,9 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -52,10 +55,13 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken at) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) at;
         // 通过表单接收的用户名
+        Subject currentUser = SecurityUtils.getSubject();
         String username = token.getUsername();
         if (username != null && !"".equals(username)) {
             User user = userService.findByName(username);
             if (user != null) {
+                Session session = currentUser.getSession();
+                session.setAttribute("user", user);
                 return new SimpleAuthenticationInfo(user.getName(), user.getPassword(), getName());
             }
         }

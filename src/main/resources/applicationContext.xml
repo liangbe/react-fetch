@@ -72,7 +72,7 @@
 
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
-        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/springboot" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/reactfetch" />
         <property name="user" value="sbDev" />
         <property name="password" value="mysql123" />
 

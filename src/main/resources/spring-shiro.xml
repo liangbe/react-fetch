@@ -22,7 +22,15 @@
     <!-- 定义 Shiro 主要业务对象 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="systemAuthorizingRealm" />
+        <!--<property name="sessionManager" ref="sessionManager" />-->
     </bean>
+
+    <!--<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">-->
+        <!--&lt;!&ndash; session的失效时长，单位毫秒 &ndash;&gt;-->
+        <!--<property name="globalSessionTimeout" value="30000"/>-->
+        <!--&lt;!&ndash; 删除失效的session &ndash;&gt;-->
+        <!--<property name="deleteInvalidSessions" value="true"/>-->
+    <!--</bean>-->
 
     <bean id="systemAuthorizingRealm" class="com.bee.fetch.utils.MyShiroRealm"></bean>
 

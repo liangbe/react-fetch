@@ -9,22 +9,20 @@ import java.util.List;
 @Table(name="user_info")
 public class User {
 
-    @Id
+
 //    @GeneratedValue(strategy = GenerationType.AUTO,generator = "user_id_seq")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="password" ,nullable = false)
     private  String password;
 
-    @Column(name="age")
-    private int age;
-
     @Column(length = 30,name="name")
     private  String name;
 
-    @Column(length = 30,name="first_name")
-    private  String firstName;
+    @Column(length = 30,name="phone_num")
+    private  String phoneNum;
 
     public Long getId() {
         return id;
@@ -32,14 +30,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getName() {
@@ -50,19 +40,19 @@ public class User {
         this.name = name;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 }

@@ -23,8 +23,6 @@ import java.util.Map;
 @RequestMapping("/")
 public class testController {
 
-
-
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String Login() {
         return "login";
@@ -33,6 +31,17 @@ public class testController {
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String Index() {
         return "index";
+    }
+
+    @RequestMapping(value = "/getSession", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> GetSession() {
+
+        Map<String, Object> responseMap = new HashMap<>();
+        Object user=SecurityUtils.getSubject().getSession().getAttribute("user");
+        responseMap.put( "state",user==null?false:true);
+        responseMap.put( "user",user);
+        return responseMap;
     }
 
     @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
